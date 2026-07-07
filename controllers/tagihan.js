@@ -27,7 +27,7 @@ function isLunas(item) {
 function formatDetail(item) {
     const lunas = isLunas(item);
     const icon = lunas ? '✅' : '❌';
-    const status = lunas ? 'Lunas' : 'Belum Lunas';
+    const status = lunas ? 'LUNAS' : 'BELUM LUNAS';
 
     let jatuhTempo = '-';
     if (item.waktu_berakhir) {
@@ -37,16 +37,16 @@ function formatDetail(item) {
     return [
         `🧾 *Detail Tagihan*`,
         ``,
-        `📌 No. Tagihan   : \`${item.nomor_tagihan}\``,
-        `🎓 NPM           : \`${item.npm}\``,
-        `👤 Nama          : ${item.nama_mahasiswa}`,
-        `📚 Fakultas      : ${item.nama_fakultas}`,
-        `📖 Prodi         : ${item.nama_program_studi}`,
-        `🏷️  Jenis         : ${item.jenis_tagihan}`,
-        `💰 Ditagih       : ${formatRupiah(item.nominal_ditagih)}`,
-        `💳 Terbayar      : ${formatRupiah(item.nominal_terbayar)}`,
-        `📅 Jatuh Tempo   : ${jatuhTempo}`,
-        `📊 Status        : ${icon} ${status}`,
+        `📌 No. Tagihan      : \`${item.nomor_tagihan}\``,
+        `🎓 NPM              : \`${item.npm}\``,
+        `👤 Nama Mahasiswa   : ${item.nama_mahasiswa}`,
+        `📚 Fakultas         : ${item.nama_fakultas}`,
+        `📖 Program Studi     : ${item.nama_program_studi}`,
+        `🏷️  Jenis Tagihan    : ${item.jenis_tagihan}`,
+        `💰 Total Tagihan    : ${formatRupiah(item.nominal_ditagih)}`,
+        `💳 Total Dibayarkan : ${formatRupiah(item.nominal_terbayar)}`,
+        `📅 Batas Pembayaran : ${jatuhTempo}`,
+        `📊 Status           : ${icon} ${status}`,
     ].join('\n');
 }
 
@@ -63,33 +63,33 @@ function formatItem(item) {
 
 // Format daftar tagihan per mahasiswa
 function formatDaftar(items) {
-    if (items.length === 0) return '📭 Tidak ada tagihan ditemukan.';
+    if (items.length === 0) return '📭 Tidak ditemukan data tagihan.';
 
     const mhs = items[0];
     const totalDitagih = items.reduce((s, i) => s + Number(i.nominal_ditagih), 0);
     const totalTerbayar = items.reduce((s, i) => s + Number(i.nominal_terbayar), 0);
 
     const header = [
-        `🎓 *Tagihan Mahasiswa*`,
+        `🎓 *Informasi Tagihan Mahasiswa*`,
         ``,
-        `👤 Nama     : *${mhs.nama_mahasiswa}*`,
-        `🔢 NPM      : \`${mhs.npm}\``,
-        `📚 Prodi    : ${mhs.nama_program_studi}`,
+        `👤 Nama           : *${mhs.nama_mahasiswa}*`,
+        `🔢 NPM            : \`${mhs.npm}\``,
+        `📖 Program Studi   : ${mhs.nama_program_studi}`,
         ``,
         `📋 *Rincian Tagihan*`,
     ].join('\n');
 
     const list = items.map((item, i) => `${i + 1}. ${formatItem(item)}`).join('\n');
-    const footer = `\n───────────────\n💰 *Total Ditagih*  : ${formatRupiah(totalDitagih)}\n💳 *Total Terbayar* : ${formatRupiah(totalTerbayar)}`;
+    const footer = `\n──────────────────\n💰 *Total Tagihan*     : ${formatRupiah(totalDitagih)}\n💳 *Total Dibayarkan*  : ${formatRupiah(totalTerbayar)}`;
 
     return header + '\n' + list + footer;
 }
 
-// Format tagihan PMB (1 mahasiswa baru)
+// Format tagihan PMB (1 tagihan, ringkas)
 function formatPMB(item) {
     const lunas = isLunas(item);
     const icon = lunas ? '✅' : '❌';
-    const status = lunas ? 'Lunas' : 'Belum Lunas';
+    const status = lunas ? 'LUNAS' : 'BELUM LUNAS';
 
     let jatuhTempo = '-';
     if (item.waktu_berakhir) {
@@ -99,14 +99,14 @@ function formatPMB(item) {
     return [
         `🧾 *Tagihan PMB*`,
         ``,
-        `📌 No. Pendaftaran : \`${item.npm}\``,
-        `👤 Nama            : ${item.nama_mahasiswa}`,
-        `📚 Prodi           : ${item.nama_program_studi}`,
-        `🏛️  Fakultas        : ${item.nama_fakultas}`,
-        `💰 Ditagih         : ${formatRupiah(item.nominal_ditagih)}`,
-        `💳 Terbayar        : ${formatRupiah(item.nominal_terbayar)}`,
-        `📅 Jatuh Tempo     : ${jatuhTempo}`,
-        `📊 Status          : ${icon} ${status}`,
+        `� Nomor Pendaftaran  : \`${item.npm}\``,
+        `👤 Nama               : ${item.nama_mahasiswa}`,
+        `📖 Program Studi       : ${item.nama_program_studi}`,
+        `🔖 No. Tagihan        : \`${item.nomor_tagihan}\``,
+        `💰 Total Tagihan      : ${formatRupiah(item.nominal_ditagih)}`,
+        `💳 Total Dibayarkan   : ${formatRupiah(item.nominal_terbayar)}`,
+        `📅 Batas Pembayaran   : ${jatuhTempo}`,
+        `📊 Status             : ${icon} ${status}`,
     ].join('\n');
 }
 
@@ -115,15 +115,23 @@ function formatPMB(item) {
 // ---------------------------------------------------------------------------
 
 /**
- * Cari SEMUA tagihan berdasarkan NPM
+ * Cari SEMUA tagihan berdasarkan NPM (dan opsional Tahun Akademik)
  */
-async function cariByNIM(npm) {
-    const [rows] = await pool.execute(
-        `SELECT * FROM ${TABLE} WHERE npm = ? ORDER BY created_at DESC`,
-        [npm]
-    );
+async function cariByNIM(npm, tahunAkademik = null) {
+    let query = `SELECT * FROM ${TABLE} WHERE npm = ?`;
+    const params = [npm];
+
+    if (tahunAkademik) {
+        query += ` AND tahun_akademik = ?`;
+        params.push(tahunAkademik);
+    }
+
+    query += ` ORDER BY created_at DESC`;
+
+    const [rows] = await pool.execute(query, params);
     if (rows.length === 0) {
-        return `❌ Tidak ada tagihan untuk NPM \`${npm}\`.`;
+        const extra = tahunAkademik ? ` dan Tahun Akademik \`${tahunAkademik}\`` : '';
+        return `❌ Data tagihan dengan NPM \`${npm}\`${extra} tidak ditemukan.\n\nSilakan periksa kembali NPM dan Tahun Akademik Anda.`;
     }
     return formatDaftar(rows);
 }
@@ -137,12 +145,13 @@ async function cariByNoPendaftaran(noDaftar) {
         [noDaftar]
     );
     if (rows.length === 0) {
-        return `❌ Tidak ditemukan tagihan untuk nomor pendaftaran \`${noDaftar}\`.`;
+        return `❌ Data tagihan dengan Nomor Pendaftaran \`${noDaftar}\` tidak ditemukan.\n\nSilakan periksa kembali nomor pendaftaran Anda.`;
     }
-    if (rows.length === 1) {
-        return formatPMB(rows[0]);
-    }
-    return formatDaftar(rows);
+    // Tampilkan setiap tagihan dengan format terpisah
+    return rows.map((item, i) => {
+        const prefix = rows.length > 1 ? `📋 *Tagihan ${i + 1} dari ${rows.length}*\n\n` : '';
+        return prefix + formatPMB(item);
+    }).join('\n\n──────────────────\n\n');
 }
 
 /**
@@ -155,7 +164,7 @@ async function cariByIdTagihan(noTagihan) {
     );
     const hasil = rows[0];
     if (!hasil) {
-        return `❌ Tagihan \`${noTagihan}\` tidak ditemukan.`;
+        return `❌ Data tagihan dengan nomor \`${noTagihan}\` tidak ditemukan.`;
     }
     return formatDetail(hasil);
 }

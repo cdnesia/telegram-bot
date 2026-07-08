@@ -5,7 +5,11 @@ echo "📥 Pull perubahan terbaru dari Git..."
 git pull
 
 echo ""
-echo "🔨 Rebuild image & restart container..."
+echo "� Stop & hapus container lama..."
+docker compose down
+
+echo ""
+echo "🔨 Rebuild image & jalankan container..."
 docker compose up -d --build
 
 echo ""

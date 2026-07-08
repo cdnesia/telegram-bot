@@ -34,7 +34,7 @@ function isAdmin(chatId) {
 // ============================================================
 function buildMainMenu(chatId) {
     const buttons = [
-        [{ text: '📝 Layanan PMB', url: 'https://penmaru.umjambi.ac.id' }],
+        [{ text: '📝 Informasi PMB', url: 'https://penmaru.umjambi.ac.id' }],
         [{ text: '💰 Layanan Keuangan', callback_data: 'menu_keuangan' }],
         [{ text: '📚 Layanan Akademik', callback_data: 'menu_akademik' }],
     ];

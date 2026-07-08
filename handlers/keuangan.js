@@ -26,7 +26,7 @@ function register(bot) {
             };
 
             bot.editMessageText(
-                `💰 *Layanan Keuangan*\n\nSilakan pilih layanan:`,
+                `💰 *Layanan Keuangan*\n\nHalo! 👋 Ada yang bisa kami bantu terkait keuangan?\nSilahkan pilih layanan di bawah ini ya:`,
                 { chat_id: chatId, message_id: messageId, parse_mode: 'Markdown', ...keyboard }
             );
         }
@@ -41,7 +41,7 @@ function register(bot) {
 
             const timer = setTimeout(() => {
                 userState.delete(chatId);
-                bot.sendMessage(chatId, '⏰ *Sesi berakhir.* Silakan mulai kembali dengan /start.', { parse_mode: 'Markdown' });
+                bot.sendMessage(chatId, '⏰ *Sesi berakhir.* Silahkan mulai kembali dengan /start.', { parse_mode: 'Markdown' });
             }, 120_000);
 
             userState.set(chatId, { step: 'waiting_tahun_akademik', timer, previousMenu: parentMenu });
@@ -55,7 +55,7 @@ function register(bot) {
             };
 
             bot.editMessageText(
-                `🎓 *Cek Informasi Tagihan*\n\nSilakan masukkan *Tahun Akademik*\n\nContoh: _20231_ atau _20232_`,
+                `🎓 *Cek Informasi Tagihan*\n\nBaik, silahkan masukkan *Tahun Akademik* terlebih dahulu ya.\n\nContoh: _20231_ atau _20232_`,
                 { chat_id: chatId, message_id: messageId, parse_mode: 'Markdown', ...keyboard }
             );
         }
@@ -70,13 +70,13 @@ function register(bot) {
 
             const timer = setTimeout(() => {
                 userState.delete(chatId);
-                bot.sendMessage(chatId, '⏰ *Sesi berakhir.* Silakan mulai kembali dengan /start.', { parse_mode: 'Markdown' });
+                bot.sendMessage(chatId, '⏰ *Sesi berakhir.* Silahkan mulai kembali dengan /start.', { parse_mode: 'Markdown' });
             }, 120_000);
 
             userState.set(chatId, { step: 'waiting_no_pendaftaran', timer, previousMenu: parentMenu });
 
             bot.editMessageText(
-                `🔍 *Cek Tagihan PMB*\n\nSilakan masukkan *Nomor Pendaftaran* Anda:\n\n_Contoh: UMJA202610001_`,
+                `🔍 *Cek Tagihan PMB*\n\nSilahkan masukkan *Nomor Pendaftaran* Anda ya.\n\n_Contoh: UMJA202610001_`,
                 { chat_id: chatId, message_id: messageId, parse_mode: 'Markdown', reply_markup: { inline_keyboard: [
                     [{ text: '⬅ Kembali', callback_data: 'back' }, { text: '🏠 Menu Utama', callback_data: 'menu_utama' }],
                 ]}}
@@ -93,7 +93,7 @@ function register(bot) {
 
             const timer = setTimeout(() => {
                 userState.delete(chatId);
-                bot.sendMessage(chatId, '⏰ *Sesi berakhir.* Silakan mulai kembali dengan /start.', { parse_mode: 'Markdown' });
+                bot.sendMessage(chatId, '⏰ *Sesi berakhir.* Silahkan mulai kembali dengan /start.', { parse_mode: 'Markdown' });
             }, 120_000);
 
             userState.set(chatId, { step: 'waiting_no_pendaftaran', timer, previousMenu: parentMenu });
@@ -107,7 +107,7 @@ function register(bot) {
             };
 
             bot.editMessageText(
-                `🔍 *Cek Tagihan PMB*\n\nSilakan masukkan *Nomor Pendaftaran* Anda:\n\n_Contoh: UMJA202610001_`,
+                `🔍 *Cek Tagihan PMB*\n\nSilahkan masukkan *Nomor Pendaftaran* Anda ya.\n\n_Contoh: UMJA202610001_`,
                 { chat_id: chatId, message_id: messageId, parse_mode: 'Markdown', ...keyboard }
             );
         }

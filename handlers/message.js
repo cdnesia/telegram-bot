@@ -17,16 +17,15 @@ function register(bot) {
             resetUserState(chatId);
             bot.sendMessage(chatId,
                 `👋 *Selamat datang di UM Jambi Assist!*\n\n` +
-                `Asisten digital *Universitas Muhammadiyah Jambi* yang membantu layanan akademik, keuangan, dan informasi kampus.\n\n` +
+                `Halo! Saya asisten digital *Universitas Muhammadiyah Jambi* yang siap membantu Anda. 😊\n\n` +
                 `*Layanan yang tersedia:*\n` +
-                `• 📝 Layanan PMB\n` +
+                `• 📝 Informasi PMB\n` +
                 `• 💳 Layanan Keuangan\n` +
                 `• 📚 Layanan Akademik\n` +
                 `• 🎓 Layanan Wisuda\n` +
                 `• 📄 Layanan Surat & Administrasi\n` +
                 `• 📢 Informasi Kampus\n\n` +
-                `_UM Jambi Assist siap membantu Anda kapan saja dengan layanan yang cepat, mudah, dan aman._\n\n` +
-                `Silakan pilih layanan di bawah ini:`,
+                `Silakan pilih layanan yang Anda butuhkan di bawah ini ya 👇`,
                 { parse_mode: 'Markdown', ...buildMainMenu(chatId) }
             );
             return;
@@ -38,7 +37,7 @@ function register(bot) {
             if (state && (state.step === 'waiting_npm' || state.step === 'waiting_no_pendaftaran' || state.step === 'waiting_tahun_akademik')) {
                 resetUserState(chatId);
                 bot.sendMessage(chatId,
-                    `❌ *Proses dibatalkan.*\n\nAnda dapat memilih menu kembali:`,
+                    `❌ *Proses dibatalkan.*\n\nTidak masalah! Anda bisa mulai lagi kapan saja. Silakan pilih menu di bawah ini:`,
                     { parse_mode: 'Markdown', ...buildMainMenu(chatId) }
                 );
             } else {
@@ -61,7 +60,7 @@ function register(bot) {
             // Validasi format: 5 digit, diawali 20, diakhiri 1 (ganjil) atau 2 (genap)
             if (!/^20\d{2}[12]$/.test(tahunAkademik)) {
                 bot.sendMessage(chatId,
-                    '⚠️ *Format Tahun Akademik tidak valid.*\n\nGunakan format: *Tahun + Semester*\n✅ 20231\n✅ 20232\n\nSilakan masukkan kembali:',
+                    '⚠️ *Format Tahun Akademik tidak valid.*\n\nGunakan format: *Tahun + Semester*\n✅ 20231\n✅ 20232\n\nSilakan coba masukkan kembali ya:',
                     { parse_mode: 'Markdown', reply_markup: { inline_keyboard: [
                         [{ text: '⬅ Kembali', callback_data: 'back' }, { text: '🏠 Menu Utama', callback_data: 'menu_utama' }],
                     ]}}
@@ -81,7 +80,7 @@ function register(bot) {
             userState.set(chatId, { step: 'waiting_npm', timer, previousMenu, tahunAkademik });
 
             bot.sendMessage(chatId,
-                `📅 Tahun Akademik: *${tahunAkademik}*\n\nSilakan masukkan *Nomor Pokok Mahasiswa (NPM)* Anda:\n\n_Contoh: S12560001_`,
+                `📅 Tahun Akademik: *${tahunAkademik}*\n\nTerima kasih! Sekarang silakan masukkan *Nomor Pokok Mahasiswa (NPM)* Anda ya.\n\n_Contoh: S12560001_`,
                 { parse_mode: 'Markdown', reply_markup: { inline_keyboard: [
                     [{ text: '⬅ Kembali', callback_data: 'back' }, { text: '🏠 Menu Utama', callback_data: 'menu_utama' }],
                 ]}}
@@ -92,7 +91,7 @@ function register(bot) {
         else if (step === 'waiting_npm') {
             const nim = text.trim();
             if (!/^[\dA-Za-z]+$/.test(nim)) {
-                bot.sendMessage(chatId, '⚠️ Format NPM tidak dikenali. Mohon periksa kembali:', { parse_mode: 'Markdown' });
+                bot.sendMessage(chatId, '⚠️ Format NPM tidak dikenali. Mohon periksa kembali NPM Anda ya:', { parse_mode: 'Markdown' });
                 return;
             }
 
@@ -101,7 +100,7 @@ function register(bot) {
             clearTimer(chatId);
             userState.set(chatId, { previousMenu });
 
-            await bot.sendMessage(chatId, '🔍 *Sedang mengambil data tagihan...*', { parse_mode: 'Markdown' });
+            await bot.sendMessage(chatId, '🔍 *Mohon tunggu, sedang mengambil data tagihan Anda...*', { parse_mode: 'Markdown' });
             const balasan = await tagihanController.cariByNIM(nim, tahunAkademik);
 
             bot.sendMessage(chatId, balasan, {
@@ -120,7 +119,7 @@ function register(bot) {
             clearTimer(chatId);
             userState.set(chatId, { previousMenu });
 
-            await bot.sendMessage(chatId, '🔍 *Sedang mengambil data tagihan PMB...*', { parse_mode: 'Markdown' });
+            await bot.sendMessage(chatId, '🔍 *Mohon tunggu, sedang mengambil data tagihan PMB Anda...*', { parse_mode: 'Markdown' });
             const balasan = await tagihanController.cariByNoPendaftaran(noDaftar);
 
             bot.sendMessage(chatId, balasan, {

@@ -24,7 +24,7 @@ function register(bot) {
             };
 
             bot.editMessageText(
-                `📚 *Layanan Akademik*\n\n🚧 *Dalam pengembangan.*\n\nFitur-fitur layanan akademik akan segera tersedia.`,
+                `📚 *Layanan Akademik*\n\nMohon maaf, fitur ini sedang dalam tahap pengembangan. 🙏\n\nKami akan segera menghadirkan layanan akademik untuk Anda. Pantau terus ya!`,
                 { chat_id: chatId, message_id: messageId, parse_mode: 'Markdown', ...keyboard }
             );
         }

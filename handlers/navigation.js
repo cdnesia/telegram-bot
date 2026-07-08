@@ -27,7 +27,16 @@ function register(bot) {
             resetUserState(chatId);
 
             bot.editMessageText(
-                `📋 *Menu Utama*\n\nSilakan pilih layanan yang diinginkan:`,
+                `� *Selamat datang di UM Jambi Assist!*\n\n` +
+                `Halo! Saya asisten digital *Universitas Muhammadiyah Jambi* yang siap membantu Anda. 😊\n\n` +
+                `*Layanan yang tersedia:*\n` +
+                `• 📝 Informasi PMB\n` +
+                `• 💳 Layanan Keuangan\n` +
+                `• 📚 Layanan Akademik\n` +
+                `• 🎓 Layanan Wisuda\n` +
+                `• 📄 Layanan Surat & Administrasi\n` +
+                `• 📢 Informasi Kampus\n\n` +
+                `Silakan pilih layanan yang Anda butuhkan di bawah ini ya 👇`,
                 { chat_id: chatId, message_id: messageId, parse_mode: 'Markdown', ...buildMainMenu(chatId) }
             );
         }
